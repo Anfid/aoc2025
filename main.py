@@ -24,6 +24,7 @@ def main():
         "--time",
         help="measure the time between file open and result returned",
         action="store_true",
+        default=None,
     )
 
     args = parser.parse_args()
@@ -56,9 +57,10 @@ def main():
 
         define_day(
             day=args.day,
-            options=options,
-            selection=selection,
+            options=options,  # type: ignore
+            selection=selection,  # type: ignore
             input=args.input,
+            measure_time=args.time,
         )
 
     except ModuleNotFoundError:

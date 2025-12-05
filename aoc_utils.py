@@ -10,9 +10,12 @@ def define_day(
     options: Mapping[str, tuple[SolutionF, None | int]],
     selection: list[str],
     input: str | None = None,
+    measure_time: bool | None = None,
 ):
     if input is None:
         input = f"./input/day{day}.txt"
+    else:
+        options = {k: (f, None) for k, (f, _) in options.items()}
 
     available_opts = options.keys()
     unknown_opts = [p for p in selection if p not in available_opts]
@@ -30,7 +33,13 @@ def define_day(
 
         if len(selection) > 1:
             print(f"Part {part}:")
-        pretty_solver(f, input, s, set_clipboard=len(selection) == 1)
+        pretty_solver(
+            f,
+            input,
+            s,
+            set_clipboard=len(selection) == 1,
+            measure_time=measure_time,
+        )
         if i < len(selection) - 1:
             print()
 
@@ -132,7 +141,7 @@ class SolutionHint:
             return False
         return True
 
-    def __add__(self, other: SolutionHint) -> SolutionHint:
+    def __add__(self, other: "SolutionHint") -> "SolutionHint":
         gt = max(
             (v for v in (self.greater_than, other.greater_than) if v is not None),
             default=None,
@@ -144,7 +153,7 @@ class SolutionHint:
         incorrect = self.incorrect & other.incorrect
         return SolutionHint(greater_than=gt, less_than=lt, incorrect=incorrect)
 
-    def __and__(self, value: SolutionHint) -> SolutionHint:
+    def __and__(self, value: "SolutionHint") -> "SolutionHint":
         return self + value
 
 
