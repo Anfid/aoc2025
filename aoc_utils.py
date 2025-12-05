@@ -24,7 +24,7 @@ def define_day(
             f"Unknown option{'s' if len(unknown_opts) > 1 else ''}: {', '.join(unknown_opts)}"
         )
         print(
-            f"Available option{'s' if len(available_opts) > 1 else ''}: {', '.join(available_opts)}"
+            f"Available option{'s' if len(available_opts) > 1 else ''}: {', '.join(sorted(available_opts))}"
         )
         exit(1)
 
@@ -52,6 +52,62 @@ def try_copy(result: int):
         print("Copied!")
     except:
         pass
+
+
+def compare_implementations(
+    day: int,
+    options: Mapping[str, tuple[SolutionF, None | int]],
+    alt_options: Mapping[str, tuple[SolutionF, None | int]],
+    selection: list[str],
+    input: str | None = None,
+    measure_time: bool | None = None,
+):
+    measure_time = True if measure_time is None else measure_time
+    if input is None:
+        input = f"./input/day{day}.txt"
+    else:
+        options = {k: (f, None) for k, (f, _) in options.items()}
+
+    available_opts = set(options.keys()).intersection(alt_options.keys())
+    unknown_opts = [p for p in selection if p not in available_opts]
+    if unknown_opts:
+        print(
+            f"Unknown option{'s' if len(unknown_opts) > 1 else ''}: {', '.join(unknown_opts)}"
+        )
+        print(
+            f"Available option{'s' if len(available_opts) > 1 else ''}: {', '.join(sorted(available_opts))}"
+        )
+        exit(1)
+
+    for i, part in enumerate(selection):
+        if len(selection) > 1:
+            print(f"Baseline part {part}:")
+        else:
+            print("Baseline:")
+        f, _ = options[part]
+        pretty_solver(
+            f,
+            input,
+            None,
+            set_clipboard=False,
+            measure_time=measure_time,
+        )
+        print()
+
+        if len(selection) > 1:
+            print(f"Alternative part {part}:")
+        else:
+            print("Alternative:")
+        f, _ = alt_options[part]
+        pretty_solver(
+            f,
+            input,
+            None,
+            set_clipboard=False,
+            measure_time=measure_time,
+        )
+        if i < len(selection) - 1:
+            print("\n")
 
 
 def pretty_solver(
