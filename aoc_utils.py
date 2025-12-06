@@ -190,9 +190,9 @@ class SolutionHint:
 
     def compare(self, result: int) -> int | bool:
         if self.greater_than is not None and result <= self.greater_than:
-            return self.greater_than - result
+            return 1
         if self.less_than is not None and result >= self.less_than:
-            return self.less_than - result
+            return -1
         if result in self.incorrect:
             return False
         return True
